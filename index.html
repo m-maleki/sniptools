@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جعبه ابزار توسعه‌دهندگان | Online Dev Tools</title>
+    
+    <!-- External Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/jsoneditor@10.0.0/dist/jsoneditor.min.css" rel="stylesheet">
+
+    <!-- Link to your CSS file -->
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+<body class="dark-theme">
+
+    <div class="app-container">
+        <header class="main-header">
+            <h1>جعبه ابزار توسعه‌دهندگان | Online Dev Tools</h1>
+            <p class="text-lg text-gray-400 mt-2">مجموعه‌ای جامع از ابزارهای آنلاین کاربردی برای برنامه‌نویسان و توسعه‌دهندگان وب.</p>
+        </header>
+
+        <nav id="top-nav" class="top-nav">
+            <button id="nav-jwt" class="nav-item" data-view="jwt">
+                <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
+                </svg>
+                <span class="nav-item-text">JWT Decoder</span>
+            </button>
+            <button id="nav-json" class="nav-item" data-view="json">
+                <svg class="nav-item-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M13 8h-4M13 16h-4M13 12h-4"></path></svg>
+                <span class="nav-item-text">ویرایشگر JSON</span>
+            </button>
+            <button id="nav-crypto" class="nav-item" data-view="crypto">
+                <svg class="nav-item-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-2 4h4m-4-11h4m-4 12V4a2 2 0 012-2h4a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2z"></path></svg>
+                <span class="nav-item-text">ابزارهای رمزنگاری</span>
+            </button>
+            <button id="nav-password" class="nav-item" data-view="password">
+                <svg class="nav-item-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2v5a2 2 0 01-2 2h-5a2 2 0 01-2-2V9a2 2 0 012-2h5z"></path></svg>
+                <span class="nav-item-text">ساخت رمز عبور</span>
+            </button>
+            <button id="nav-diff" class="nav-item" data-view="diff">
+                <svg class="nav-item-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                <span class="nav-item-text">مقایسه متن</span>
+            </button>
+            <button id="nav-url" class="nav-item" data-view="url">
+                <svg class="nav-item-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-.758l3.658-3.658.757.757-.757.757M17.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101z"></path></svg>
+                <span class="nav-item-text">تبدیل URL</span>
+            </button>
+            <button id="nav-units" class="nav-item" data-view="units">
+                <svg class="nav-item-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>
+                <span class="nav-item-text">تبدیل واحد</span>
+            </button>
+            <button id="nav-uuid" class="nav-item" data-view="uuid">
+                <svg class="nav-item-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1v-3.25m-7.75 0h1.5l.75-3.5h5.5l.75 3.5h1.5m-11 0a2 2 0 100-4 2 2 0 000 4zm11 0a2 2 0 100-4 2 2 0 000 4z"></path></svg>
+                <span class="nav-item-text">تولید UUID / GUID</span>
+            </button>
+        </nav>
+
+        <main class="main-content">
+            <div id="view-jwt" class="view-container"></div>
+            <div id="view-diff" class="view-container hidden"></div>
+            <div id="view-json" class="view-container hidden"></div>
+            <div id="view-url" class="view-container hidden"></div>
+            <div id="view-crypto" class="view-container hidden"></div>
+            <div id="view-units" class="view-container hidden"></div>
+            <div id="view-password" class="view-container hidden"></div>
+            <div id="view-uuid" class="view-container hidden"></div>
+        </main>
+        
+        <footer class="app-footer">
+            <p>تولید شده توسط هوش مصنوعی جمنای</p>
+            <p class="mt-2">
+                <a href="mailto:maleki.jm@gmail.com" class="text-gray-400 hover:text-white transition-colors">maleki.jm@gmail.com</a>
+            </p>
+        </footer>
+    </div>
+    
+    <!-- External JS Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsoneditor@10.0.0/dist/jsoneditor.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.33.0/ace.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.33.0/theme-tomorrow_night_eighties.js"></script>
+
+    <!-- Main App Script (MUST BE LOADED FIRST) -->
+    <script src="scripts/script.js"></script>
+    
+    <!-- Tool Scripts (Loaded AFTER main script) -->
+    <script src="scripts/jwt-decoder.js"></script>
+    <script src="scripts/text-differ.js"></script>
+    <script src="scripts/json-editor.js"></script>
+    <script src="scripts/url-converter.js"></script>
+    <script src="scripts/crypto-tools.js"></script>
+    <script src="scripts/unit-converter.js"></script>
+    <script src="scripts/password-generator.js"></script>
+    <script src="scripts/uuid-generator.js"></script>
+
+</body>
+</html>
