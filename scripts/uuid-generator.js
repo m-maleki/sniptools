@@ -12,27 +12,27 @@
                 <!-- Left Column: Controls -->
                 <div class="space-y-6">
                      <div class="bg-gray-800/50 p-6 rounded-xl">
-                        <h3 class="text-xl font-semibold mb-4 text-purple-400">تنظیمات و عملیات</h3>
-                        <div class="flex items-center justify-between flex-wrap gap-4">
-                            <!-- Settings -->
-                            <div class="flex items-center gap-2">
-                                <label for="num-uuids" class="text-gray-300 whitespace-nowrap">تعداد:</label>
-                                <input type="number" id="num-uuids" value="10" min="1" max="100" class="w-24 modern-input text-center direction-ltr p-2">
-                            </div>
-                            <!-- Other Actions -->
-                            <div class="flex items-center gap-2">
-                                <button id="copy-uuid-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-all">کپی همه</button>
-                                <button id="clear-uuid-btn" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition-all">پاک کردن</button>
-                            </div>
-                        </div>
-                        <button id="generate-uuid-btn" class="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition-all text-lg">تولید کن</button>
-                     </div>
+                         <h3 class="text-xl font-semibold mb-4 text-purple-400">Settings & Actions</h3>
+                         <div class="flex items-center justify-between flex-wrap gap-4">
+                             <!-- Settings -->
+                             <div class="flex items-center gap-2">
+                                 <label for="num-uuids" class="text-gray-300 whitespace-nowrap">Amount:</label>
+                                 <input type="number" id="num-uuids" value="10" min="1" max="100" class="w-24 modern-input text-center direction-ltr p-2">
+                             </div>
+                             <!-- Other Actions -->
+                             <div class="flex items-center gap-2">
+                                 <button id="copy-uuid-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-all">Copy All</button>
+                                 <button id="clear-uuid-btn" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition-all">Clear</button>
+                             </div>
+                         </div>
+                         <button id="generate-uuid-btn" class="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition-all text-lg">Generate</button>
+                       </div>
                 </div>
                 <!-- Right Column: Output -->
                 <div class="bg-gray-800/50 p-6 rounded-xl flex flex-col">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-xl font-semibold text-purple-400">Generated UUIDs</h3>
-                        <span id="uuid-count" class="text-sm text-gray-400">تعداد: 0</span>
+                        <span id="uuid-count" class="text-sm text-gray-400">Count: 0</span>
                     </div>
                     <div id="uuid-output-list-container" class="flex-grow">
                         <ol id="uuid-output-list" class="space-y-2">
@@ -59,7 +59,7 @@
 
         const updateCount = () => {
             const count = uuidOutputList.querySelectorAll('li:not(.placeholder)').length;
-            if (uuidCountSpan) uuidCountSpan.textContent = `تعداد: ${count}`;
+            if (uuidCountSpan) uuidCountSpan.textContent = `Count: ${count}`;
         };
 
         const generateAndDisplayUuids = () => {
@@ -68,7 +68,7 @@
             const num = parseInt(numUuidsInput.value);
 
             if (isNaN(num) || num < 1 || num > 100) {
-                uuidOutputList.innerHTML = '<li class="placeholder text-red-400">تعداد نامعتبر است (1-100).</li>';
+                uuidOutputList.innerHTML = '<li class="placeholder text-red-400">Invalid amount (1-100).</li>';
                 updateCount();
                 return;
             }
@@ -78,7 +78,7 @@
                 const li = document.createElement('li');
                 li.innerHTML = `
                     <span class="uuid-text-content">${newUuid}</span>
-                    <button class="copy-single-uuid-btn" title="کپی کردن این UUID">
+                    <button class="copy-single-uuid-btn" title="Copy this UUID">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                     </button>
                 `;
@@ -103,8 +103,8 @@
             if (!uuidElements.length) return;
             const allUuids = Array.from(uuidElements).map(el => el.textContent).join('\n');
             navigator.clipboard.writeText(allUuids).then(() => {
-                this.textContent = 'کپی شد!';
-                setTimeout(() => { this.textContent = 'کپی همه'; }, 2000);
+                this.textContent = 'Copied!';
+                setTimeout(() => { this.textContent = 'Copy All'; }, 2000);
             });
         });
         if(clearUuidBtn) clearUuidBtn.addEventListener('click', () => {

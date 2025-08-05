@@ -1,5 +1,5 @@
 (function(App) {
-    if (!App) { console.error("App object not initialized."); return; }
+    if (!App) { console.error("App object is not initialized."); return; }
     App.initUnits = function() {
         const view = document.getElementById('view-units');
         if (!view || view.innerHTML.trim() !== '') return;
@@ -8,41 +8,41 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-5">
                         <div class="flex justify-between items-center mb-2">
-                            <label for="unit-input-value" class="block text-lg font-medium text-gray-300">مقدار ورودی</label>
-                            <button id="unit-clear-btn" class="text-sm text-gray-400 hover:text-white transition-colors">پاک کردن</button>
+                            <label for="unit-input-value" class="block text-lg font-medium text-gray-300">Input Value</label>
+                            <button id="unit-clear-btn" class="text-sm text-gray-400 hover:text-white transition-colors">Clear</button>
                         </div>
-                        <input type="number" id="unit-input-value" class="w-full modern-input direction-ltr" placeholder="مقدار را وارد کنید...">
+                        <input type="number" id="unit-input-value" class="w-full modern-input direction-ltr" placeholder="Enter value...">
                     </div>
                     <div class="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-5">
-                        <label for="unit-type" class="block text-lg font-medium text-gray-300 mb-2">نوع واحد</label>
-                        <select id="unit-type" class="w-full p-4 text-base custom-select">
-                            <option value="length">طول</option>
-                            <option value="data">حجم داده</option>
-                            <option value="time">زمان</option>
-                            <option value="temperature">دما</option>
-                            <option value="weight">وزن</option>
-                            <option value="area">مساحت</option>
-                            <option value="volume">حجم</option>
+                        <label for="unit-type" class="block text-lg font-medium text-gray-300 mb-2">Unit Type</label>
+                        <select id="unit-type" class="w-full p-4 text-base bg-gray-900 border-2 border-gray-700 rounded-lg appearance-none">
+                            <option value="length">Length</option>
+                            <option value="data">Data Size</option>
+                            <option value="time">Time</option>
+                            <option value="temperature">Temperature</option>
+                            <option value="weight">Weight</option>
+                            <option value="area">Area</option>
+                            <option value="volume">Volume</option>
                         </select>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                     <div class="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-5">
-                        <label for="unit-from" class="block text-lg font-medium text-gray-300 mb-2">تبدیل از</label>
-                        <select id="unit-from" class="w-full p-4 text-base custom-select"></select>
+                        <label for="unit-from" class="block text-lg font-medium text-gray-300 mb-2">Convert From</label>
+                        <select id="unit-from" class="w-full p-4 text-base bg-gray-900 border-2 border-gray-700 rounded-lg appearance-none"></select>
                     </div>
                     <div class="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-5">
-                        <label for="unit-to" class="block text-lg font-medium text-gray-300 mb-2">تبدیل به</label>
-                        <select id="unit-to" class="w-full p-4 text-base custom-select"></select>
+                        <label for="unit-to" class="block text-lg font-medium text-gray-300 mb-2">Convert To</label>
+                        <select id="unit-to" class="w-full p-4 text-base bg-gray-900 border-2 border-gray-700 rounded-lg appearance-none"></select>
                     </div>
                 </div>
                 <div class="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-5 mt-4">
                     <div class="flex justify-between items-center mb-2">
-                        <label class="block text-lg font-medium text-gray-300">نتیجه</label>
-                        <button id="unit-copy-btn" class="text-sm text-gray-400 hover:text-white transition-colors">کپی کردن</button>
+                        <label class="block text-lg font-medium text-gray-300">Result</label>
+                        <button id="unit-copy-btn" class="text-sm text-gray-400 hover:text-white transition-colors">Copy</button>
                     </div>
                     <div id="unit-result-display" class="unit-result-display">
-                        <span class="placeholder">نتیجه تبدیل در اینجا نمایش داده می‌شود</span>
+                        <span class="placeholder">Conversion result will be shown here</span>
                     </div>
                 </div>
             </div>`;
@@ -56,13 +56,13 @@
         const copyBtn = document.getElementById('unit-copy-btn');
 
         const units = {
-            length: { 'متر': 1, 'کیلومتر': 1000, 'سانتی‌متر': 0.01, 'میلی‌متر': 0.001, 'میکرومتر': 1e-6, 'نانومتر': 1e-9, 'مایل': 1609.34, 'یارد': 0.9144, 'فوت': 0.3048, 'اینچ': 0.0254, 'مایل دریایی': 1852 },
-            data: { 'بیت': 1, 'بایت': 8, 'کیلوبیت': 1000, 'کیلوبایت': 8000, 'مگابیت': 1e6, 'مگابایت': 8e6, 'گیگابیت': 1e9, 'گیگابایت': 8e9, 'ترابیت': 1e12, 'ترابایت': 8e12 },
-            time: { 'ثانیه': 1, 'میلی‌ثانیه': 0.001, 'میکروثانیه': 1e-6, 'نانوثانیه': 1e-9, 'دقیقه': 60, 'ساعت': 3600, 'روز': 86400, 'هفته': 604800, 'ماه': 2629800, 'سال': 31557600 },
-            temperature: { 'سلسیوس': { toKelvin: c => c + 273.15, fromKelvin: k => k - 273.15 }, 'فارنهایت': { toKelvin: f => (f - 32) * 5/9 + 273.15, fromKelvin: k => (k - 273.15) * 9/5 + 32 }, 'کلوین': { toKelvin: k => k, fromKelvin: k => k } },
-            weight: { 'کیلوگرم': 1, 'گرم': 0.001, 'میلی‌گرم': 1e-6, 'پوند': 0.453592, 'اونس': 0.0283495, 'تن متریک': 1000 },
-            area: { 'متر مربع': 1, 'کیلومتر مربع': 1e6, 'سانتی‌متر مربع': 1e-4, 'میلی‌متر مربع': 1e-6, 'مایل مربع': 2589988.11, 'یارد مربع': 0.836127, 'فوت مربع': 0.092903, 'اینچ مربع': 0.00064516, 'هکتار': 10000, 'جریب': 4046.86 },
-            volume: { 'متر مکعب': 1, 'کیلومتر مکعب': 1e9, 'سانتی‌متر مکعب': 1e-6, 'لیتر': 0.001, 'میلی‌لیتر': 1e-6, 'گالن آمریکایی': 0.00378541, 'گالن امپریال': 0.00454609, 'فوت مکعب': 0.0283168, 'اینچ مکعب': 1.63871e-5 }
+            length: { 'Meter': 1, 'Kilometer': 1000, 'Centimeter': 0.01, 'Millimeter': 0.001, 'Micrometer': 1e-6, 'Nanometer': 1e-9, 'Mile': 1609.34, 'Yard': 0.9144, 'Foot': 0.3048, 'Inch': 0.0254, 'Nautical Mile': 1852 },
+            data: { 'Bit': 1, 'Byte': 8, 'Kilobit': 1000, 'Kilobyte': 8000, 'Megabit': 1e6, 'Megabyte': 8e6, 'Gigabit': 1e9, 'Gigabyte': 8e9, 'Terabit': 1e12, 'Terabyte': 8e12 },
+            time: { 'Second': 1, 'Millisecond': 0.001, 'Microsecond': 1e-6, 'Nanosecond': 1e-9, 'Minute': 60, 'Hour': 3600, 'Day': 86400, 'Week': 604800, 'Month': 2629800, 'Year': 31557600 },
+            temperature: { 'Celsius': { toKelvin: c => c + 273.15, fromKelvin: k => k - 273.15 }, 'Fahrenheit': { toKelvin: f => (f - 32) * 5/9 + 273.15, fromKelvin: k => (k - 273.15) * 9/5 + 32 }, 'Kelvin': { toKelvin: k => k, fromKelvin: k => k } },
+            weight: { 'Kilogram': 1, 'Gram': 0.001, 'Milligram': 1e-6, 'Pound': 0.453592, 'Ounce': 0.0283495, 'Metric Ton': 1000 },
+            area: { 'Square Meter': 1, 'Square Kilometer': 1e6, 'Square Centimeter': 1e-4, 'Square Millimeter': 1e-6, 'Square Mile': 2589988.11, 'Square Yard': 0.836127, 'Square Foot': 0.092903, 'Square Inch': 0.00064516, 'Hectare': 10000, 'Acre': 4046.86 },
+            volume: { 'Cubic Meter': 1, 'Cubic Kilometer': 1e9, 'Cubic Centimeter': 1e-6, 'Liter': 0.001, 'Milliliter': 1e-6, 'US Gallon': 0.00378541, 'Imperial Gallon': 0.00454609, 'Cubic Foot': 0.0283168, 'Cubic Inch': 1.63871e-5 }
         };
 
         const populateUnitOptions = (selectElement, unitCategory) => {
@@ -84,7 +84,7 @@
             const type = unitTypeSelect.value;
 
             if (isNaN(value) || !fromUnitKey || !toUnitKey) {
-                resultDisplay.innerHTML = `<span class="placeholder">نتیجه تبدیل در اینجا نمایش داده می‌شود</span>`;
+                resultDisplay.innerHTML = `<span class="placeholder">Conversion result will be shown here</span>`;
                 return;
             }
 
@@ -97,7 +97,7 @@
                 result = baseValue / units[type][toUnitKey];
             }
             
-            let formattedResult = result.toPrecision(10).replace(/\.?0+$/, "");
+            let formattedResult = parseFloat(result.toPrecision(10));
 
             resultDisplay.innerHTML = `
                 <span class="value">${value}</span>
@@ -123,8 +123,8 @@
             if (!resultDisplay || resultDisplay.querySelector('.placeholder')) return;
             const textToCopy = resultDisplay.innerText.replace(/\s+/g, ' ').trim();
             navigator.clipboard.writeText(textToCopy).then(() => {
-                copyBtn.textContent = 'کپی شد!';
-                setTimeout(() => { copyBtn.textContent = 'کپی کردن'; }, 2000);
+                copyBtn.textContent = 'Copied!';
+                setTimeout(() => { copyBtn.textContent = 'Copy'; }, 2000);
             });
         });
 
