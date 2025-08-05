@@ -3,8 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>جعبه ابزار توسعه‌دهندگان | Online Dev Tools</title>
     
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+    <title>SnipTools | جعبه ابزار توسعه‌دهندگان | ابزارهای آنلاین برنامه‌نویسی</title>
+    <meta name="description" content="SnipTools یا همان جعبه ابزار توسعه‌دهندگان، مجموعه‌ای از ابزارهای آنلاین برای برنامه‌نویسان شامل JWT Decoder، ویرایشگر JSON، رمزنگاری، ساخت رمز عبور، مقایسه متن، تبدیل واحد و UUID Generator است.">
+    <meta name="keywords" content="SnipTools, ابزار برنامه‌نویسی, ابزار آنلاین توسعه‌دهنده, JWT Decoder, JSON Editor, Base64, رمزنگاری, UUID Generator, ابزارهای Web Developer">
+    <meta name="author" content="توسعه‌یافته توسط جمنای">
+    <meta name="robots" content="index, follow">
+
     <!-- External Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,7 +26,7 @@
 
     <div class="app-container">
         <header class="main-header">
-            <h1>جعبه ابزار توسعه‌دهندگان | Online Dev Tools</h1>
+            <h1>جعبه ابزار توسعه‌دهندگان | SnipTools </h1>
             <p class="text-lg text-gray-400 mt-2">مجموعه‌ای جامع از ابزارهای آنلاین کاربردی برای برنامه‌نویسان و توسعه‌دهندگان وب.</p>
         </header>
 
@@ -72,12 +79,18 @@
         </main>
         
         <footer class="app-footer">
-            <p>تولید شده توسط هوش مصنوعی جمنای</p>
-            <p class="mt-2">
-                <a href="mailto:maleki.jm@gmail.com" class="text-gray-400 hover:text-white transition-colors">maleki.jm@gmail.com</a>
-            </p>
+                        <p class="mt-2 text-sm text-gray-400">
+    Open source on <a href="https://github.com/your-username/sniptools" target="_blank" class="text-blue-400 hover:underline">GitHub</a>
+</p>
+            <p> <span id="year"></span> SnipTools &copy;</p>
+
+
         </footer>
     </div>
+    
+    <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
     
     <!-- External JS Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js"></script>

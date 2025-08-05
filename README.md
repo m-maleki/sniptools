@@ -1,22 +1,35 @@
-# 🛠️ جعبه ابزار توسعه‌دهندگان | Online Dev Tools
+# 🛠️ SnipTools | Online Dev Toolbox
 
-این ابزارها با کمک هوش مصنوعی جمنای توسعه یافته است.
-
-<div dir="rtl">
-مجموعه‌ای جامع از ابزارهای آنلاین کاربردی برای برنامه‌نویسان و توسعه‌دهندگان وب.
-</div>
+A comprehensive set of useful **online tools** for developers and web engineers — all in one place, free and open-source.
 
 ---
 
-## ✨ ویژگی‌ها
+## ✨ Features
 
-<ul dir="rtl">
-<li><b>JWT Decoder</b>: رمزگشایی و مشاهده محتوای Header و Payload توکن‌های JWT.</li>
-<li><b>ویرایشگر JSON</b>: مشاهده، فرمت‌بندی و ویرایش ساختاریافته فایل‌ها و متن‌های JSON.</li>
-<li><b>ابزارهای رمزنگاری</b>: انجام عملیات هشینگ (MD5, SHA-1, SHA-256, SHA-512) و انکد/دیکد Base64.</li>
-<li><b>ساخت رمز عبور</b>: تولید رمزهای عبور تصادفی و قوی با قابلیت تنظیم طول و انتخاب نوع کاراکترها (حروف بزرگ و کوچک، اعداد، کاراکترهای ویژه) همراه با نمایش قدرت رمز.</li>
-<li><b>مقایسه متن</b>: مقایسه دو متن و نمایش تفاوت‌ها به صورت بصری.</li>
-<li><b>تبدیل URL</b>: انکد و دیکد کردن URLها و رشته‌های متنی برای استفاده در وب.</li>
-<li><b>تبدیل واحد</b>: تبدیل واحدهای مختلف اندازه‌گیری شامل طول، حجم داده، زمان، دما، وزن، مساحت و حجم.</li>
-<li><b>تولید UUID / GUID</b>: تولید شناسه‌های منحصر به فرد جهانی (UUID/GUID) برای مقاصد مختلف برنامه‌نویسی.</li>
-</ul>
+- **JWT Decoder**: Decode and view the Header and Payload of JWT tokens.
+- **JSON Editor**: View, format, and edit structured JSON files and strings.
+- **Crypto Tools**: Perform hashing (MD5, SHA-1, SHA-256, SHA-512), and Base64 encoding/decoding.
+- **Password Generator**: Generate strong, customizable passwords with length and character options (uppercase, lowercase, numbers, symbols), plus strength estimation.
+- **Text Diff Viewer**: Compare two text snippets and visually highlight differences.
+- **URL Encoder / Decoder**: Encode and decode URLs and query strings for safe web usage.
+- **Unit Converter**: Convert between common units of measurement such as length, data size, time, temperature, weight, area, and volume.
+- **UUID / GUID Generator**: Generate universally unique identifiers for programming use.
+
+---
+
+## 🌐 Live Demo
+
+🔗 [sniptools.ir](https://sniptools.ir)
+
+---
+
+## 📂 Source Code
+
+The project is open-source and available on GitHub:  
+👉 [github.com/m-maleki/sniptools](https://github.com/m-maleki/sniptools)
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
