@@ -1,0 +1,18 @@
+{
+  "name": "SnipTools — Free Online Developer Tools",
+  "short_name": "SnipTools",
+  "description": "Free, fast, privacy-first developer toolbox with 16+ tools: JWT Decoder, JSON Editor, Regex Tester, UUID Generator, Hash Tools, CRON Parser, Color Converter and more.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#6366f1",
+  "orientation": "any",
+  "lang": "en",
+  "categories": ["developer", "utilities", "productivity"],
+  "icons": [
+    { "src": "favicon.ico", "sizes": "any", "type": "image/x-icon" }
+  ],
+  "screenshots": [],
+  "prefer_related_applications": false
+}

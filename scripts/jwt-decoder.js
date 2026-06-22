@@ -1,142 +1,244 @@
-// scripts/jwt-decoder.js
-(function(App) {
-    if (!App) {
-        console.error("App object is not initialized.");
-        return;
-    }
-    // Initialize a shared space for passing data between tools
-    App.sharedData = App.sharedData || {};
+(function (App) {
+    if (!App) return;
 
-    App.initJwt = function() {
+    App.initJwt = function () {
         const view = document.getElementById('view-jwt');
-        if (!view || view.innerHTML.trim() !== '') return; // Already initialized
+        if (!view || view.innerHTML.trim() !== '') return;
 
         view.innerHTML = `
-            <div class="flex flex-col gap-6">
-                <div class="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-5">
-                    <div class="flex justify-between items-center mb-2">
-                        <label for="jwt-input" class="block text-lg font-medium text-gray-300">Encoded Token</label>
-                        <button id="jwt-clear-btn" class="text-sm text-gray-400 hover:text-white transition-colors">Clear</button>
-                    </div>
-                    <div id="jwt-input" contenteditable="true" role="textbox" class="w-full p-4 bg-gray-900 border-2 border-gray-700 rounded-lg direction-ltr focus:border-purple-500 focus:ring-2 focus:ring-purple-500 focus:outline-none transition-colors font-mono text-base min-h-[10rem] text-gray-300" data-placeholder="Paste your token here..."></div>
-                </div>
-                <div id="jwt-error-message" class="hidden bg-red-900/80 border border-red-600 text-red-200 px-4 py-3 rounded-lg" role="alert">
-                    <strong class="font-bold">Error!</strong>
-                    <span id="jwt-error-text" class="block sm:inline"></span>
-                </div>
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl overflow-hidden border-t-4 border-blue-500">
-                        <div class="flex justify-between items-center p-4 bg-gray-800"><h2 class="text-xl font-semibold text-blue-400">Header</h2><button class="copy-btn" data-target="jwt-header" title="Copy Header"><svg class="w-6 h-6 text-gray-400 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg></button></div>
-                        <pre id="jwt-header" class="p-4 direction-ltr text-blue-300 font-mono text-sm whitespace-pre-wrap break-all min-h-[18rem]" data-placeholder="Decoded header content will be displayed here."></pre>
-                    </div>
-                    <div class="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl overflow-hidden border-t-4 border-purple-500">
-                        <div class="flex justify-between items-center p-4 bg-gray-800">
-                            <h2 class="text-xl font-semibold text-purple-400">Payload</h2>
-                            <div class="flex items-center gap-2">
-                                <button class="copy-btn" data-target="jwt-payload" title="Copy Payload"><svg class="w-6 h-6 text-gray-400 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg></button>
-                            </div>
-                        </div>
-                        <pre id="jwt-payload" class="p-4 direction-ltr text-purple-300 font-mono text-sm whitespace-pre-wrap break-all min-h-[18rem]" data-placeholder="Decoded payload content will be displayed here."></pre>
-                    </div>
-                    <div class="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl overflow-hidden border-t-4 border-teal-500">
-                        <div class="flex justify-between items-center p-4 bg-gray-800"><h2 class="text-xl font-semibold text-teal-400">Signature</h2><button class="copy-btn" data-target="jwt-signature" title="Copy Signature"><svg class="w-6 h-6 text-gray-400 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg></button></div>
-                        <pre id="jwt-signature" class="p-4 direction-ltr text-teal-300 font-mono text-sm whitespace-pre-wrap break-all min-h-[18rem]" data-placeholder="The signature part of the token will be displayed here."></pre>
-                    </div>
-                </div>
-            </div>`;
-        
-        const jwtInputEl = document.getElementById('jwt-input');
-        const headerOutput = document.getElementById('jwt-header');
-        const payloadOutput = document.getElementById('jwt-payload');
-        const signatureOutput = document.getElementById('jwt-signature');
-        const errorMessageDiv = document.getElementById('jwt-error-message');
-        const errorTextSpan = document.getElementById('jwt-error-text');
-        const clearButton = document.getElementById('jwt-clear-btn');
-        const copyButtons = view.querySelectorAll('.copy-btn');
-        const editPayloadBtn = document.getElementById('jwt-edit-payload-btn');
+<div class="gap-row">
+    <div class="tool-header">
+        <div>
+            <h2 class="tool-title">JWT Decoder</h2>
+            <p class="tool-desc">Paste a JSON Web Token to decode its header, payload and inspect expiry.</p>
+        </div>
+    </div>
 
-        if(editPayloadBtn) {
-            editPayloadBtn.addEventListener('click', () => {
-                const payloadText = payloadOutput.textContent;
-                if (!payloadText || payloadText.startsWith('...')) return;
-                
-                try {
-                    // Check if it's valid JSON before switching
-                    JSON.parse(payloadText); 
-                    
-                    // Store the payload and switch tabs
-                    App.sharedData.jsonToLoad = payloadText;
-                    document.getElementById('nav-json').click();
+    <!-- Input -->
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">Encoded Token</span>
+            <button id="jwt-clear-btn" class="btn btn-ghost btn-sm">Clear</button>
+        </div>
+        <div class="card-body">
+            <div id="jwt-input"
+                contenteditable="true"
+                role="textbox"
+                spellcheck="false"
+                class="code-block dir-ltr"
+                style="min-height:7rem;outline:none;cursor:text;"
+                data-placeholder="Paste your JWT token here…"
+                aria-label="JWT token input"
+                aria-multiline="true"></div>
+        </div>
+    </div>
 
-                } catch (e) {
-                    showError("Payload is not valid JSON and cannot be opened in the editor.");
-                }
-            });
-        }
+    <!-- Error -->
+    <div id="jwt-error" class="hidden" role="alert" style="
+        padding:.75rem 1rem;
+        background:rgba(239,68,68,.1);
+        border:1px solid rgba(239,68,68,.3);
+        border-radius:var(--radius-md);
+        color:var(--accent-danger);
+        font-size:.85rem;
+        display:flex;
+        align-items:center;
+        gap:.5rem;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+        <span id="jwt-error-text"></span>
+    </div>
 
-        const base64UrlDecode = (str) => {
-            let base64 = str.replace(/-/g, '+').replace(/_/g, '/');
-            const pad = base64.length % 4;
-            if (pad) {
-                if (pad === 2) base64 += '==';
-                else if (pad === 3) base64 += '=';
-            }
-            try {
-                return decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-            } catch (e) { return null; }
+    <!-- Expiry info bar -->
+    <div id="jwt-expiry-bar" class="hidden" style="
+        display:flex;
+        align-items:center;
+        gap:.75rem;
+        padding:.75rem 1.25rem;
+        background:var(--card-bg);
+        border:1px solid var(--border-default);
+        border-radius:10px;
+        font-size:.82rem;
+        flex-wrap:wrap;">
+        <span id="jwt-expiry-badge"></span>
+        <span id="jwt-expiry-text" style="color:var(--text-secondary)"></span>
+        <span id="jwt-issued-text"  style="color:var(--text-muted);margin-left:auto"></span>
+    </div>
+
+    <!-- Decoded sections -->
+    <div class="grid-3">
+        <!-- Header -->
+        <div class="card" style="border-top:3px solid #60a5fa">
+            <div class="card-header">
+                <span class="card-title jwt-header-color">Header</span>
+                <button class="btn-icon" id="copy-jwt-header" title="Copy header" aria-label="Copy header">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"/></svg>
+                </button>
+            </div>
+            <pre id="jwt-header-out" class="code-block dir-ltr jwt-header-color" style="border:none;border-radius:0 0 10px 10px;min-height:12rem;background:var(--code-bg)"></pre>
+        </div>
+        <!-- Payload -->
+        <div class="card" style="border-top:3px solid #c084fc">
+            <div class="card-header">
+                <span class="card-title jwt-payload-color">Payload</span>
+                <div class="row" style="gap:.375rem">
+                    <button class="btn btn-ghost btn-sm" id="jwt-open-json-btn" style="display:none" title="Open in JSON editor">JSON</button>
+                    <button class="btn-icon" id="copy-jwt-payload" title="Copy payload" aria-label="Copy payload">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"/></svg>
+                    </button>
+                </div>
+            </div>
+            <pre id="jwt-payload-out" class="code-block dir-ltr jwt-payload-color" style="border:none;border-radius:0 0 10px 10px;min-height:12rem;background:var(--code-bg)"></pre>
+        </div>
+        <!-- Signature -->
+        <div class="card" style="border-top:3px solid #2dd4bf">
+            <div class="card-header">
+                <span class="card-title jwt-sig-color">Signature</span>
+                <button class="btn-icon" id="copy-jwt-sig" title="Copy signature" aria-label="Copy signature">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"/></svg>
+                </button>
+            </div>
+            <pre id="jwt-sig-out" class="code-block dir-ltr jwt-sig-color" style="border:none;border-radius:0 0 10px 10px;min-height:12rem;background:var(--code-bg)"></pre>
+        </div>
+    </div>
+</div>`;
+
+        const inputEl     = document.getElementById('jwt-input');
+        const headerOut   = document.getElementById('jwt-header-out');
+        const payloadOut  = document.getElementById('jwt-payload-out');
+        const sigOut      = document.getElementById('jwt-sig-out');
+        const errorEl     = document.getElementById('jwt-error');
+        const errorText   = document.getElementById('jwt-error-text');
+        const expiryBar   = document.getElementById('jwt-expiry-bar');
+        const expiryBadge = document.getElementById('jwt-expiry-badge');
+        const expiryText  = document.getElementById('jwt-expiry-text');
+        const issuedText  = document.getElementById('jwt-issued-text');
+        const clearBtn    = document.getElementById('jwt-clear-btn');
+        const openJsonBtn = document.getElementById('jwt-open-json-btn');
+
+        const b64urlDecode = str => {
+            let b = str.replace(/-/g, '+').replace(/_/g, '/');
+            const pad = b.length % 4;
+            if (pad === 2) b += '=='; else if (pad === 3) b += '=';
+            try { return decodeURIComponent(atob(b).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')); }
+            catch { return null; }
         };
 
-        const showError = (message) => { if(errorMessageDiv) { errorTextSpan.textContent = message; errorMessageDiv.classList.remove('hidden'); }};
-        const hideError = () => { if(errorMessageDiv) errorMessageDiv.classList.add('hidden'); };
-        const clearOutputs = () => { 
-            if(headerOutput) headerOutput.textContent = ''; 
-            if(payloadOutput) payloadOutput.textContent = ''; 
-            if(signatureOutput) signatureOutput.textContent = ''; 
-            hideError(); 
+        const fmtDate = ts => {
+            if (!ts) return null;
+            const d = new Date(ts * 1000);
+            return d.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
         };
 
-        const decodeJwt = () => {
-            if(!jwtInputEl) return;
-            const token = jwtInputEl.innerText.trim();
+        const relTime = ts => {
+            if (!ts) return '';
+            const diff = ts - Math.floor(Date.now() / 1000);
+            const abs  = Math.abs(diff);
+            if (abs < 60)     return `${diff > 0 ? 'in' : ''} ${abs}s${diff < 0 ? ' ago' : ''}`;
+            if (abs < 3600)   return `${diff > 0 ? 'in ' : ''}${Math.floor(abs/60)}m${diff < 0 ? ' ago' : ''}`;
+            if (abs < 86400)  return `${diff > 0 ? 'in ' : ''}${Math.floor(abs/3600)}h${diff < 0 ? ' ago' : ''}`;
+            return `${diff > 0 ? 'in ' : ''}${Math.floor(abs/86400)}d${diff < 0 ? ' ago' : ''}`;
+        };
+
+        const showError = msg => { errorText.textContent = msg; errorEl.classList.remove('hidden'); };
+        const hideError = ()  => errorEl.classList.add('hidden');
+
+        const clearOutputs = () => {
+            headerOut.textContent = '';
+            payloadOut.textContent = '';
+            sigOut.textContent = '';
+            expiryBar.style.display = 'none';
+            expiryBar.classList.add('hidden');
+            openJsonBtn.style.display = 'none';
+            hideError();
+        };
+
+        let lastPayloadJson = '';
+
+        const decode = () => {
+            const token = inputEl.innerText.trim();
             clearOutputs();
-            if (!token) { jwtInputEl.innerHTML = ''; return; }
+            if (!token) { inputEl.innerHTML = ''; return; }
 
             const parts = token.split('.');
-            const [headerB64, payloadB64, signatureB64] = parts;
-            let hasError = false;
+            if (parts.length !== 3) { showError('A JWT must have exactly 3 parts separated by dots.'); return; }
 
-            if (headerB64) { 
-                const decoded = base64UrlDecode(headerB64);
-                try { headerOutput.textContent = JSON.stringify(JSON.parse(decoded), null, 2); } catch (err) { headerOutput.textContent = '...Invalid content...'; hasError = true; } 
+            const [h64, p64, sig] = parts;
+            let headerObj = null, payloadObj = null, hasError = false;
+
+            const hRaw = b64urlDecode(h64);
+            try { headerObj = JSON.parse(hRaw); headerOut.textContent = JSON.stringify(headerObj, null, 2); }
+            catch { headerOut.textContent = hRaw || '(invalid)'; hasError = true; }
+
+            const pRaw = b64urlDecode(p64);
+            try { payloadObj = JSON.parse(pRaw); payloadOut.textContent = JSON.stringify(payloadObj, null, 2); lastPayloadJson = payloadOut.textContent; openJsonBtn.style.display = ''; }
+            catch { payloadOut.textContent = pRaw || '(invalid)'; hasError = true; }
+
+            sigOut.textContent = sig;
+
+            if (hasError) { showError('Some token parts could not be parsed.'); }
+
+            /* Expiry */
+            if (payloadObj) {
+                const exp = payloadObj.exp;
+                const iat = payloadObj.iat;
+                const now = Math.floor(Date.now() / 1000);
+
+                if (exp !== undefined) {
+                    expiryBar.style.display = 'flex';
+                    expiryBar.classList.remove('hidden');
+                    const expired = now > exp;
+                    const soonThreshold = 300; // 5 min
+                    const soon = !expired && (exp - now) < soonThreshold;
+
+                    const cls = expired ? 'expiry-expired' : soon ? 'expiry-soon' : 'expiry-valid';
+                    const label = expired ? '✕ Expired' : soon ? '⚠ Expires soon' : '✓ Valid';
+                    expiryBadge.innerHTML = `<span class="expiry-badge ${cls}">${label}</span>`;
+                    expiryText.textContent = `Expires: ${fmtDate(exp)} (${relTime(exp)})`;
+                }
+                if (iat !== undefined) {
+                    issuedText.textContent = `Issued: ${fmtDate(iat)}`;
+                }
             }
-            if (payloadB64) { 
-                const decoded = base64UrlDecode(payloadB64);
-                try { payloadOutput.textContent = JSON.stringify(JSON.parse(decoded), null, 2); } catch (err) { payloadOutput.textContent = '...Invalid content...'; hasError = true; } 
-            }
-            if (signatureB64) { signatureOutput.textContent = signatureB64; }
 
-            const dot = `<span class="text-gray-500">.</span>`;
-            let ht = `<span class="text-blue-400">${headerB64 || ''}</span>`;
-            if (parts.length > 1) { ht += dot + `<span class="text-purple-400">${payloadB64 || ''}</span>`; }
-            if (parts.length > 2) { ht += dot + `<span class="text-teal-400">${signatureB64 || ''}</span>`; }
-            jwtInputEl.innerHTML = ht;
+            /* Highlight token input */
+            const dot = `<span style="color:var(--text-muted)">.</span>`;
+            inputEl.innerHTML =
+                `<span class="jwt-header-color">${h64}</span>${dot}` +
+                `<span class="jwt-payload-color">${p64}</span>${dot}` +
+                `<span class="jwt-sig-color">${sig}</span>`;
 
-            if (parts.length !== 3 || hasError) { showError('Invalid token or incorrect format.'); }
+            /* keep cursor at end */
+            const sel = window.getSelection();
+            const range = document.createRange();
+            range.selectNodeContents(inputEl);
+            range.collapse(false);
+            sel.removeAllRanges();
+            sel.addRange(range);
         };
 
-        if(jwtInputEl) jwtInputEl.addEventListener('input', decodeJwt);
-        if(clearButton) clearButton.addEventListener('click', () => { jwtInputEl.innerHTML = ''; clearOutputs(); });
-        
-        copyButtons.forEach(button => { 
-            button.addEventListener('click', function() { 
-                const targetEl = document.getElementById(this.dataset.target); 
-                if (!targetEl || !targetEl.textContent) return; 
-                navigator.clipboard.writeText(targetEl.textContent).then(() => {
-                    const originalTitle = this.title; 
-                    this.title = 'Copied!'; 
-                    setTimeout(() => { this.title = originalTitle; }, 2000); 
-                }).catch(err => console.error('Failed to copy: ', err));
-            }); 
+        inputEl.addEventListener('input', decode);
+
+        clearBtn.addEventListener('click', () => { inputEl.innerHTML = ''; clearOutputs(); });
+
+        openJsonBtn.addEventListener('click', () => {
+            if (!lastPayloadJson) return;
+            App.sharedData.jsonToLoad = lastPayloadJson;
+            App.switchView('json');
         });
+
+        App.initCopyBtn(document.getElementById('copy-jwt-header'), () => headerOut.textContent);
+        App.initCopyBtn(document.getElementById('copy-jwt-payload'), () => payloadOut.textContent);
+        App.initCopyBtn(document.getElementById('copy-jwt-sig'), () => sigOut.textContent);
+
+        /* placeholder styling */
+        const style = document.createElement('style');
+        style.textContent = `
+            #jwt-input:empty::before {
+                content: attr(data-placeholder);
+                color: var(--text-muted);
+                pointer-events: none;
+            }
+        `;
+        document.head.appendChild(style);
     };
 })(window.App);

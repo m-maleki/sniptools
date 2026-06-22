@@ -1,110 +1,182 @@
-(function(App) {
-    if (!App) {
-        console.error("App object is not initialized.");
-        return;
-    }
+(function (App) {
+    if (!App) return;
 
-    let monacoEditorInstance = null;
+    let monacoInstance = null;
 
-    App.initJson = function() {
+    App.initJson = function () {
         const view = document.getElementById('view-json');
         if (!view || view.innerHTML.trim() !== '') return;
 
         view.innerHTML = `
-            <div class="flex flex-col gap-4">
-                <div class="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-5 h-[60vh] flex flex-col">
-                    <div class="flex justify-between items-center mb-2">
-                        <label class="block text-lg font-medium text-gray-300">JSON Editor</label>
-                        <div class="flex gap-4 items-center">
-                            <button id="json-copy-btn" class="text-sm text-gray-400 hover:text-white transition-colors py-2 px-4 rounded-lg flex items-center gap-2">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                                Copy
-                            </button>
-                            <button id="json-clear-btn-editor" class="text-sm text-gray-400 hover:text-white transition-colors">Clear</button>
-                            <button id="json-format-btn" class="text-sm text-emerald-400 hover:text-emerald-300 transition-colors font-semibold">Format</button>
-                        </div>
-                    </div>
-                    <div id="monaco-container" class="w-full flex-grow rounded-lg overflow-hidden border border-gray-700"></div>
-                </div>
-            </div>
-        `;
+<div class="gap-row">
+    <div class="tool-header">
+        <div>
+            <h2 class="tool-title">JSON Editor</h2>
+            <p class="tool-desc">View, format, and validate JSON with full Monaco editor support.</p>
+        </div>
+        <div class="row" style="flex-wrap:wrap;gap:.375rem">
+            <button id="json-format-btn" class="btn btn-secondary btn-sm">Format</button>
+            <button id="json-minify-btn" class="btn btn-secondary btn-sm">Minify</button>
+            <button id="json-validate-btn" class="btn btn-secondary btn-sm">Validate</button>
+            <button id="json-copy-btn" class="btn btn-primary btn-sm">Copy</button>
+            <button id="json-clear-btn" class="btn btn-ghost btn-sm">Clear</button>
+        </div>
+    </div>
 
-        const container = document.getElementById('monaco-container');
-        const clearButton = document.getElementById('json-clear-btn-editor');
-        const copyButton = document.getElementById('json-copy-btn');
-        const formatButton = document.getElementById('json-format-btn');
+    <!-- Validation banner -->
+    <div id="json-validation-banner" class="hidden" style="
+        padding:.625rem 1rem;border-radius:var(--radius-md);font-size:.82rem;
+        display:flex;align-items:center;gap:.5rem"></div>
 
-        const defaultJson = {
-          "project": "Developer Tools",
-          "version": 1.2,
-          "isReleased": true,
-          "owner": { "name": "Community", "contact": null },
-          "tools": [
-            { "id": "jwt-decoder", "name": "JWT Decoder", "enabled": true },
-            { "id": "json-editor", "name": "JSON Editor", "enabled": true },
-            { "id": "crypto-tools", "name": "Cryptography Tools", "enabled": true }
-          ],
-          "description": "A sample JSON to demonstrate the editor's capabilities."
-        };
+    <!-- Editor -->
+    <div class="card" style="overflow:hidden">
+        <div id="json-monaco-container" style="height:65vh;width:100%"></div>
+    </div>
+</div>`;
 
-        // Check for data passed from another tool (like JWT decoder)
-        const initialJsonText = App.sharedData.jsonToLoad || JSON.stringify(defaultJson, null, 4);
-        if (App.sharedData.jsonToLoad) {
-            delete App.sharedData.jsonToLoad; // Clear it after use to prevent reloading
+        const container     = document.getElementById('json-monaco-container');
+        const formatBtn     = document.getElementById('json-format-btn');
+        const minifyBtn     = document.getElementById('json-minify-btn');
+        const validateBtn   = document.getElementById('json-validate-btn');
+        const copyBtn       = document.getElementById('json-copy-btn');
+        const clearBtn      = document.getElementById('json-clear-btn');
+        const banner        = document.getElementById('json-validation-banner');
+
+        const defaultJson = JSON.stringify({
+            "project": "SnipTools",
+            "version": "2.0",
+            "tools": ["JWT Decoder", "JSON Editor", "Crypto Tools", "Password Generator"],
+            "features": { "theme": "dark/light", "keyboard_shortcuts": true, "local_storage": true }
+        }, null, 2);
+
+        const initial = App.sharedData.jsonToLoad || defaultJson;
+        if (App.sharedData.jsonToLoad) delete App.sharedData.jsonToLoad;
+
+        function showBanner(msg, type) {
+            banner.style.background = type === 'ok' ? 'rgba(16,185,129,.1)' : 'rgba(239,68,68,.1)';
+            banner.style.border     = `1px solid ${type === 'ok' ? 'rgba(16,185,129,.3)' : 'rgba(239,68,68,.3)'}`;
+            banner.style.color      = type === 'ok' ? 'var(--accent-4)' : 'var(--accent-danger)';
+            banner.textContent      = msg;
+            banner.classList.remove('hidden');
+            banner.style.display    = 'flex';
+            setTimeout(() => { banner.classList.add('hidden'); banner.style.display = 'none'; }, 4000);
         }
 
-        // Monaco Loader
-        require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.34.1/min/vs' }});
-        require(['vs/editor/editor.main'], function () {
-            
-            // Define a custom theme that matches your app's style
+        /* Monaco theme adapts to current theme */
+        function getMonacoTheme() {
+            return document.documentElement.getAttribute('data-theme') === 'light' ? 'sniptools-light' : 'sniptools-dark';
+        }
+
+        if (typeof require === 'undefined') {
+            container.innerHTML = `<div class="empty-state" style="height:100%"><p>Monaco editor failed to load. Please refresh the page.</p></div>`;
+            return;
+        }
+
+        require.config({ paths: { 'vs': 'vendor/monaco/vs' } });
+        require(['vs/editor/editor.main'], () => {
+
             monaco.editor.defineTheme('sniptools-dark', {
-                base: 'vs-dark',
-                inherit: true,
+                base: 'vs-dark', inherit: true,
                 rules: [
-                    { token: 'string.key.json', foreground: '#63b3ed' }, // Blue for keys
-                    { token: 'string.value.json', foreground: '#ce9178' }, // Orange for string values
-                    { token: 'number.json', foreground: '#b5cea8' }, // Green for numbers
-                    { token: 'keyword.json', foreground: '#569cd6' } // Blue for true/false/null
+                    { token: 'string.key.json',   foreground: '93c5fd' },
+                    { token: 'string.value.json',  foreground: 'fca5a5' },
+                    { token: 'number.json',        foreground: '6ee7b7' },
+                    { token: 'keyword.json',       foreground: '818cf8' }
                 ],
                 colors: {
-                    'editor.background': '#1f2937', // Your --bg-secondary
-                    'editor.foreground': '#e2e8f0', // Your --text-primary
-                    'editorLineNumber.foreground': '#6b7280', // Your --text-placeholder
-                    'editorCursor.foreground': '#63b3ed',
-                    'editor.selectionBackground': '#374151', // Your --bg-tertiary
-                    'editorWidget.background': '#111827', // Your --bg-primary
-                    'editorWidget.border': '#4b5563', // Your --border-color
+                    'editor.background':            '#0f172a',
+                    'editor.foreground':            '#f1f5f9',
+                    'editorLineNumber.foreground':  '#475569',
+                    'editorCursor.foreground':      '#6366f1',
+                    'editor.selectionBackground':   '#1e40af55',
+                    'editorWidget.background':      '#1e293b',
+                    'editorWidget.border':          '#334155',
+                    'editor.lineHighlightBackground':'#1e293b55',
                 }
             });
 
-            monacoEditorInstance = monaco.editor.create(container, {
-                value: initialJsonText,
+            monaco.editor.defineTheme('sniptools-light', {
+                base: 'vs', inherit: true,
+                rules: [
+                    { token: 'string.key.json',   foreground: '2563eb' },
+                    { token: 'string.value.json',  foreground: 'dc2626' },
+                    { token: 'number.json',        foreground: '059669' },
+                    { token: 'keyword.json',       foreground: '7c3aed' }
+                ],
+                colors: {
+                    'editor.background':            '#ffffff',
+                    'editor.foreground':            '#0f172a',
+                    'editorLineNumber.foreground':  '#94a3b8',
+                    'editorCursor.foreground':      '#6366f1',
+                    'editor.selectionBackground':   '#dbeafe',
+                    'editorWidget.background':      '#f8fafc',
+                    'editorWidget.border':          '#e2e8f0',
+                }
+            });
+
+            monacoInstance = monaco.editor.create(container, {
+                value: initial,
                 language: 'json',
-                theme: 'sniptools-dark', // Use the custom theme
+                theme: getMonacoTheme(),
                 automaticLayout: true,
                 minimap: { enabled: false },
-                scrollbar: {
-                    verticalScrollbarSize: 10,
-                    horizontalScrollbarSize: 10
-                }
+                fontSize: 13,
+                lineHeight: 21,
+                fontFamily: "'JetBrains Mono', 'Courier New', monospace",
+                padding: { top: 16 },
+                scrollbar: { verticalScrollbarSize: 6, horizontalScrollbarSize: 6 },
+                smoothScrolling: true,
+                cursorBlinking: 'smooth',
+                renderLineHighlight: 'gutter',
             });
 
-            // Re-wire buttons to the new editor instance
-            if(clearButton) clearButton.addEventListener('click', () => monacoEditorInstance.setValue('{}'));
-            
-            if(formatButton) formatButton.addEventListener('click', () => {
-                monacoEditorInstance.getAction('editor.action.formatDocument').run();
+            /* Sync Monaco theme with app theme */
+            const observer = new MutationObserver(() => {
+                monaco.editor.setTheme(getMonacoTheme());
+            });
+            observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+            /* Buttons */
+            formatBtn.addEventListener('click', () => {
+                monacoInstance.getAction('editor.action.formatDocument').run();
             });
 
-            if(copyButton) copyButton.addEventListener('click', async () => {
+            minifyBtn.addEventListener('click', () => {
                 try {
-                    await navigator.clipboard.writeText(monacoEditorInstance.getValue());
-                    const originalText = copyButton.innerHTML;
-                    copyButton.innerHTML = 'Copied!';
-                    setTimeout(() => { copyButton.innerHTML = originalText; }, 2000);
-                } catch (err) { console.error('Failed to copy JSON: ', err); }
+                    const minified = JSON.stringify(JSON.parse(monacoInstance.getValue()));
+                    monacoInstance.setValue(minified);
+                    showBanner('✓ JSON minified', 'ok');
+                } catch (e) { showBanner('✕ Invalid JSON: ' + e.message, 'error'); }
+            });
+
+            validateBtn.addEventListener('click', () => {
+                try {
+                    JSON.parse(monacoInstance.getValue());
+                    showBanner('✓ Valid JSON', 'ok');
+                } catch (e) { showBanner('✕ Invalid JSON: ' + e.message, 'error'); }
+            });
+
+            copyBtn.addEventListener('click', () => {
+                App.copyText(monacoInstance.getValue(), 'JSON copied!');
+            });
+
+            clearBtn.addEventListener('click', () => {
+                monacoInstance.setValue('{}');
             });
         });
+    };
+
+    /* Re-init when switching back (to load sharedData) */
+    const _orig = App.initJson;
+    App.initJson = function () {
+        if (App.sharedData.jsonToLoad) {
+            const view = document.getElementById('view-json');
+            if (view && monacoInstance) {
+                monacoInstance.setValue(App.sharedData.jsonToLoad);
+                delete App.sharedData.jsonToLoad;
+                return;
+            }
+        }
+        _orig.call(this);
     };
 })(window.App);
