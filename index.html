@@ -1,114 +1,419 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en" dir="ltr" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <script>
+        (function(){
+            var t = localStorage.getItem('sniptools-theme');
+            if (!t) t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', t);
+        })();
+    </script>
 
-    <title>SnipTools | The Developer's Toolbox | Online Programming Tools</title>
-    <meta name="description" content="SnipTools, the developer's toolbox, is a collection of online tools for programmers including a JWT Decoder, JSON Editor, Crypto Tools, Password Generator, Text Differ, Unit Converter, and UUID Generator.">
-    <meta name="keywords" content="SnipTools, Programming Tools, Online Developer Tools, JWT Decoder, JSON Editor, Base64, Cryptography, UUID Generator, Web Developer Tools">
-    <meta name="author" content="Developed by Gemini">
-    <meta name="robots" content="index, follow">
+    <!-- Favicon & PWA -->
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="favicon.ico">
+    <link rel="manifest" href="manifest.json">
 
-    <!-- External Libraries -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    
-    <!-- Link to your CSS file -->
+    <!-- Primary SEO -->
+    <title>SnipTools — Free Online Developer Tools | JWT, JSON, Regex, UUID, Hash &amp; More</title>
+    <meta name="description" content="SnipTools is a free, fast, privacy-first developer toolbox. Decode JWTs, format JSON, test Regex, generate UUIDs, hash strings, convert units, parse CRON, preview Markdown and 16+ more tools — all run in your browser, no data sent to servers.">
+    <meta name="keywords" content="developer tools, JWT decoder, JSON formatter, regex tester, UUID generator, password generator, hash generator, base64, SHA256, HMAC, text diff, unit converter, CRON parser, color converter, timestamp converter, markdown preview, HTML entity encoder, dummy data generator, online developer tools, free developer tools">
+    <meta name="author" content="SnipTools">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)">
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://sniptools.ir/">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://sniptools.ir/">
+    <meta property="og:site_name" content="SnipTools">
+    <meta property="og:title" content="SnipTools — Free Online Developer Tools">
+    <meta property="og:description" content="Free, fast, privacy-first developer tools — JWT Decoder, JSON Editor, Regex Tester, UUID Generator, Hash Tools, CRON Parser, Color Converter and 16+ more. All run in your browser.">
+    <meta property="og:image" content="https://sniptools.ir/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@sniptools">
+    <meta name="twitter:title" content="SnipTools — Free Online Developer Tools">
+    <meta name="twitter:description" content="Free, fast, privacy-first developer tools — JWT Decoder, JSON Editor, Regex Tester, UUID Generator, Hash Tools and 16+ more. All run in your browser.">
+    <meta name="twitter:image" content="https://sniptools.ir/og-image.png">
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "SnipTools",
+      "url": "https://sniptools.ir/",
+      "description": "Free, fast, privacy-first developer toolbox with 16+ tools: JWT Decoder, JSON Editor, Regex Tester, UUID Generator, Hash Tools, CRON Parser, Color Converter, Timestamp Converter, Markdown Preview, and more.",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": [
+        "JWT Decoder & Verifier",
+        "JSON Editor & Formatter",
+        "Crypto Hash Generator (SHA-256, SHA-512, SHA-3, HMAC, RIPEMD-160)",
+        "Password Generator",
+        "Text Differ",
+        "URL Encoder / Decoder",
+        "Unit Converter",
+        "UUID / GUID Generator",
+        "Regex Tester",
+        "CRON Expression Parser",
+        "Color Converter (HEX, RGB, HSL, CMYK)",
+        "Number Base Converter",
+        "Unix Timestamp Converter",
+        "Markdown Preview",
+        "HTML Entity Encoder / Decoder",
+        "Dummy Data Generator"
+      ],
+      "author": {
+        "@type": "Organization",
+        "name": "SnipTools",
+        "url": "https://sniptools.ir/"
+      }
+    }
+    </script>
+
+    <!-- Self-hosted fonts (no external requests) -->
+    <link rel="stylesheet" href="fonts/fonts.css">
+
+    <!-- App styles -->
     <link rel="stylesheet" href="styles/style.css">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-    </style>
 </head>
-<body class="dark-theme">
+<body>
 
-    <div class="app-container">
-        <header class="main-header">
-            <h1>The Developer's Toolbox | SnipTools</h1>
-            <p class="text-lg text-gray-400 mt-2">A comprehensive suite of handy online tools for programmers and web developers.</p>
-        </header>
+<div class="bg-grid" aria-hidden="true"></div>
 
-        <nav id="top-nav" class="top-nav">
-            <button id="nav-jwt" class="nav-item" data-view="jwt">
-                <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
+<div class="layout-shell">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar" role="navigation" aria-label="Tool navigation">
+
+        <!-- Brand -->
+        <div class="sidebar-brand">
+            <div class="brand-icon" aria-hidden="true">
+                <svg width="30" height="30" viewBox="0 0 28 28" fill="none">
+                    <rect width="28" height="28" rx="8" fill="url(#brandGrad)"/>
+                    <path d="M8 10l4 4-4 4M14 18h6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <defs>
+                        <linearGradient id="brandGrad" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#6366f1"/>
+                            <stop offset="1" stop-color="#a855f7"/>
+                        </linearGradient>
+                    </defs>
                 </svg>
-                <span class="nav-item-text">JWT Decoder</span>
+            </div>
+            <div class="brand-text">
+                <span class="brand-name">SnipTools</span>
+                <span class="brand-tagline">Dev Toolbox</span>
+            </div>
+            <button class="sidebar-collapse-btn" id="sidebar-collapse-btn" aria-label="Collapse sidebar" title="Collapse sidebar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/></svg>
             </button>
-            <button id="nav-json" class="nav-item" data-view="json">
-                <svg class="nav-item-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M13 8h-4M13 16h-4M13 12h-4"></path></svg>
-                <span class="nav-item-text">JSON Editor</span>
+        </div>
+
+        <!-- Search -->
+        <div class="sidebar-search-wrap">
+            <button class="sidebar-search-btn" id="search-trigger" aria-label="Search tools (Ctrl+K)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                <span class="sidebar-search-text">Search tools…</span>
+                <kbd class="search-kbd">⌘K</kbd>
             </button>
-            <button id="nav-crypto" class="nav-item" data-view="crypto">
-                <svg class="nav-item-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-2 4h4m-4-11h4m-4 12V4a2 2 0 012-2h4a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2z"></path></svg>
-                <span class="nav-item-text">Crypto Tools</span>
-            </button>
-            <button id="nav-password" class="nav-item" data-view="password">
-                <svg class="nav-item-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2v5a2 2 0 01-2 2h-5a2 2 0 01-2-2V9a2 2 0 012-2h5z"></path></svg>
-                <span class="nav-item-text">Password Generator</span>
-            </button>
-            <button id="nav-diff" class="nav-item" data-view="diff">
-                <svg class="nav-item-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
-                <span class="nav-item-text">Text Differ</span>
-            </button>
-            <button id="nav-url" class="nav-item" data-view="url">
-                <svg class="nav-item-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-.758l3.658-3.658.757.757-.757.757M17.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101z"></path></svg>
-                <span class="nav-item-text">URL Converter</span>
-            </button>
-            <button id="nav-units" class="nav-item" data-view="units">
-                <svg class="nav-item-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>
-                <span class="nav-item-text">Unit Converter</span>
-            </button>
-            <button id="nav-uuid" class="nav-item" data-view="uuid">
-                <svg class="nav-item-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1v-3.25m-7.75 0h1.5l.75-3.5h5.5l.75 3.5h1.5m-11 0a2 2 0 100-4 2 2 0 000 4zm11 0a2 2 0 100-4 2 2 0 000 4z"></path></svg>
-                <span class="nav-item-text">UUID / GUID Generator</span>
-            </button>
+        </div>
+
+        <!-- Tool groups -->
+        <nav class="sidebar-nav" id="sidebar-nav">
+
+            <div class="nav-group">
+                <div class="nav-group-label">Security</div>
+                <button class="nav-item" data-view="jwt" title="JWT Decoder">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z"/></svg>
+                    </span>
+                    <span class="nav-item-label">JWT Decoder</span>
+                    <span class="nav-item-badge">1</span>
+                </button>
+                <button class="nav-item" data-view="crypto" title="Crypto / Hash">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
+                    </span>
+                    <span class="nav-item-label">Crypto / Hash</span>
+                    <span class="nav-item-badge">3</span>
+                </button>
+                <button class="nav-item" data-view="password" title="Password Generator">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M7.864 4.243A7.5 7.5 0 0119.5 10.5c0 2.92-.556 5.709-1.568 8.268M5.742 6.364A7.465 7.465 0 004.5 10.5a7.464 7.464 0 01-1.15 3.993m1.989 3.559A11.209 11.209 0 008.25 10.5a3.75 3.75 0 117.5 0c0 .527-.021 1.049-.064 1.565M12 10.5a14.94 14.94 0 01-3.6 9.75m6.633-4.596a18.666 18.666 0 01-2.485 5.33"/></svg>
+                    </span>
+                    <span class="nav-item-label">Password Gen.</span>
+                    <span class="nav-item-badge">4</span>
+                </button>
+            </div>
+
+            <div class="nav-group">
+                <div class="nav-group-label">Data & Text</div>
+                <button class="nav-item" data-view="json" title="JSON Editor">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/></svg>
+                    </span>
+                    <span class="nav-item-label">JSON Editor</span>
+                    <span class="nav-item-badge">2</span>
+                </button>
+                <button class="nav-item" data-view="diff" title="Text Differ">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M9 4.5v15m6-15v15m-10.875 0h15.75c.621 0 1.125-.504 1.125-1.125V5.625c0-.621-.504-1.125-1.125-1.125H4.125C3.504 4.5 3 5.004 3 5.625v12.75c0 .621.504 1.125 1.125 1.125z"/></svg>
+                    </span>
+                    <span class="nav-item-label">Text Differ</span>
+                    <span class="nav-item-badge">5</span>
+                </button>
+                <button class="nav-item" data-view="regex" title="Regex Tester">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 15.803a7.5 7.5 0 0010.607 0z"/></svg>
+                    </span>
+                    <span class="nav-item-label">Regex Tester</span>
+                </button>
+                <button class="nav-item" data-view="markdown" title="Markdown Preview">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
+                    </span>
+                    <span class="nav-item-label">Markdown</span>
+                </button>
+                <button class="nav-item" data-view="htmlentity" title="HTML Entity">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/></svg>
+                    </span>
+                    <span class="nav-item-label">HTML Entity</span>
+                </button>
+                <button class="nav-item" data-view="dummydata" title="Dummy Data">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"/></svg>
+                    </span>
+                    <span class="nav-item-label">Dummy Data</span>
+                </button>
+            </div>
+
+            <div class="nav-group">
+                <div class="nav-group-label">Converters</div>
+                <button class="nav-item" data-view="url" title="URL Tools">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/></svg>
+                    </span>
+                    <span class="nav-item-label">URL Tools</span>
+                    <span class="nav-item-badge">6</span>
+                </button>
+                <button class="nav-item" data-view="units" title="Unit Converter">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5L7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5"/></svg>
+                    </span>
+                    <span class="nav-item-label">Unit Converter</span>
+                    <span class="nav-item-badge">7</span>
+                </button>
+                <button class="nav-item" data-view="base" title="Base Converter">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z"/></svg>
+                    </span>
+                    <span class="nav-item-label">Base Converter</span>
+                </button>
+                <button class="nav-item" data-view="color" title="Color Converter">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10c.691 0 1.25-.56 1.25-1.25v-.5c0-.69-.56-1.25-1.25-1.25H12a2.5 2.5 0 010-5h6.25c.69 0 1.25-.56 1.25-1.25A9.977 9.977 0 0012 2z"/></svg>
+                    </span>
+                    <span class="nav-item-label">Color Converter</span>
+                </button>
+                <button class="nav-item" data-view="timestamp" title="Timestamp Converter">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+                    </span>
+                    <span class="nav-item-label">Timestamp</span>
+                </button>
+            </div>
+
+            <div class="nav-group">
+                <div class="nav-group-label">Generators</div>
+                <button class="nav-item" data-view="uuid" title="UUID / GUID">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5l-3.9 19.5m-2.1-19.5l-3.9 19.5"/></svg>
+                    </span>
+                    <span class="nav-item-label">UUID / GUID</span>
+                    <span class="nav-item-badge">8</span>
+                </button>
+                <button class="nav-item" data-view="cron" title="CRON Parser">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </span>
+                    <span class="nav-item-label">CRON Parser</span>
+                </button>
+            </div>
+
         </nav>
 
-        <main class="main-content">
-            <div id="view-jwt" class="view-container"></div>
-            <div id="view-diff" class="view-container hidden"></div>
-            <div id="view-json" class="view-container hidden"></div>
-            <div id="view-url" class="view-container hidden"></div>
-            <div id="view-crypto" class="view-container hidden"></div>
-            <div id="view-units" class="view-container hidden"></div>
-            <div id="view-password" class="view-container hidden"></div>
-            <div id="view-uuid" class="view-container hidden"></div>
+        <!-- Sidebar footer -->
+        <div class="sidebar-footer">
+            <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme" title="Toggle theme (Ctrl+Shift+T)">
+                <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                <span class="sidebar-footer-label">Toggle Theme</span>
+            </button>
+            <a href="https://github.com/m-maleki/sniptools" target="_blank" rel="noopener" class="github-btn" aria-label="GitHub">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
+                <span class="sidebar-footer-label">GitHub</span>
+            </a>
+            <button class="btn-icon shortcuts-btn" id="shortcuts-open-btn" aria-label="Keyboard shortcuts" title="Shortcuts (?)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path stroke-linecap="round" d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8"/></svg>
+                <span class="sidebar-footer-label">Shortcuts</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Mobile overlay -->
+    <div class="sidebar-overlay hidden" id="sidebar-overlay"></div>
+
+    <!-- ===== MAIN ===== -->
+    <div class="main-area">
+
+        <!-- Mobile header -->
+        <header class="mobile-header">
+            <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+            </button>
+            <div class="brand">
+                <div class="brand-icon" aria-hidden="true">
+                    <svg width="22" height="22" viewBox="0 0 28 28" fill="none">
+                        <rect width="28" height="28" rx="8" fill="url(#brandGrad2)"/>
+                        <path d="M8 10l4 4-4 4M14 18h6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <defs><linearGradient id="brandGrad2" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#6366f1"/><stop offset="1" stop-color="#a855f7"/></linearGradient></defs>
+                    </svg>
+                </div>
+                <span class="brand-name" id="mobile-tool-name">SnipTools</span>
+            </div>
+            <button class="theme-btn" id="theme-toggle-mobile" aria-label="Toggle theme">
+                <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            </button>
+        </header>
+
+        <!-- Content -->
+        <main class="main-content" id="main-content" role="main">
+            <div id="view-jwt"        class="view-container"></div>
+            <div id="view-json"       class="view-container hidden"></div>
+            <div id="view-crypto"     class="view-container hidden"></div>
+            <div id="view-password"   class="view-container hidden"></div>
+            <div id="view-diff"       class="view-container hidden"></div>
+            <div id="view-url"        class="view-container hidden"></div>
+            <div id="view-units"      class="view-container hidden"></div>
+            <div id="view-uuid"       class="view-container hidden"></div>
+            <div id="view-regex"      class="view-container hidden"></div>
+            <div id="view-cron"       class="view-container hidden"></div>
+            <div id="view-color"      class="view-container hidden"></div>
+            <div id="view-base"       class="view-container hidden"></div>
+            <div id="view-timestamp"  class="view-container hidden"></div>
+            <div id="view-markdown"   class="view-container hidden"></div>
+            <div id="view-htmlentity" class="view-container hidden"></div>
+            <div id="view-dummydata"  class="view-container hidden"></div>
         </main>
-        
-        <footer class="app-footer">
-            <p class="mt-2 text-sm text-gray-400">
-                Open source on <a href="https://github.com/m-maleki/sniptools" target="_blank" class="text-blue-400 hover:underline">GitHub</a>
-            </p>
-            <p> &copy; <span id="year"></span> SnipTools</p>
-        </footer>
     </div>
-    
-    <script>
-        document.getElementById("year").textContent = new Date().getFullYear();
-    </script>
-    
-    <!-- External JS Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.34.1/min/vs/loader.js"></script>
 
-    <!-- Main App Script (MUST BE LOADED FIRST) -->
-    <script src="scripts/script.js"></script>
-    
-    <!-- Tool Scripts (Loaded AFTER main script) -->
-    <script src="scripts/jwt-decoder.js"></script>
-    <script src="scripts/text-differ.js"></script>
-    <script src="scripts/json-editor.js"></script>
-    <script src="scripts/url-converter.js"></script>
-    <script src="scripts/crypto-tools.js"></script>
-    <script src="scripts/unit-converter.js"></script>
-    <script src="scripts/password-generator.js"></script>
-    <script src="scripts/uuid-generator.js"></script>
+</div>
 
+<!-- Toast -->
+<div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+<!-- Search palette -->
+<div class="search-palette hidden" id="search-dropdown" role="dialog" aria-modal="true" aria-label="Search tools">
+    <div class="search-palette-inner">
+        <div class="search-palette-input-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="text" class="search-input" id="search-input" placeholder="Search tools…" autocomplete="off" aria-label="Search tools">
+            <kbd class="search-kbd">Esc</kbd>
+        </div>
+        <div class="search-results" id="search-results"></div>
+    </div>
+</div>
+<div class="search-backdrop hidden" id="search-backdrop"></div>
+
+<!-- Keyboard shortcuts overlay -->
+<div class="shortcuts-overlay hidden" id="shortcuts-overlay" role="dialog" aria-modal="true">
+    <div class="shortcuts-panel">
+        <div class="shortcuts-header">
+            <h2>Keyboard Shortcuts</h2>
+            <button class="shortcuts-close" id="shortcuts-close" aria-label="Close">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="shortcuts-grid">
+            <div class="shortcut-item"><kbd>Ctrl</kbd><kbd>K</kbd><span>Search tools</span></div>
+            <div class="shortcut-item"><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>T</kbd><span>Toggle theme</span></div>
+            <div class="shortcut-item"><kbd>?</kbd><span>Show shortcuts</span></div>
+            <div class="shortcut-item"><kbd>Esc</kbd><span>Close dialogs</span></div>
+            <div class="shortcut-item"><kbd>Alt</kbd><kbd>1–8</kbd><span>Switch tool</span></div>
+            <div class="shortcut-item"><kbd>[</kbd><kbd>]</kbd><span>Prev / Next tool</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- Vendor libraries (self-hosted) -->
+<script src="vendor/diff_match_patch.js"></script>
+<script src="vendor/crypto-js.min.js"></script>
+<script src="vendor/monaco/vs/loader.js"></script>
+
+<!-- App scripts -->
+<script src="scripts/script.js"></script>
+<script src="scripts/jwt-decoder.js"></script>
+<script src="scripts/text-differ.js"></script>
+<script src="scripts/json-editor.js"></script>
+<script src="scripts/url-converter.js"></script>
+<script src="scripts/crypto-tools.js"></script>
+<script src="scripts/unit-converter.js"></script>
+<script src="scripts/password-generator.js"></script>
+<script src="scripts/uuid-generator.js"></script>
+<script src="scripts/regex-tester.js"></script>
+<script src="scripts/cron-parser.js"></script>
+<script src="scripts/color-converter.js"></script>
+<script src="scripts/base-converter.js"></script>
+<script src="scripts/timestamp-converter.js"></script>
+<script src="scripts/markdown-preview.js"></script>
+<script src="scripts/html-entity.js"></script>
+<script src="scripts/dummy-data.js"></script>
+
+<script>
+    // Mobile menu
+    document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
+        document.getElementById('sidebar').classList.toggle('sidebar-open');
+        document.getElementById('sidebar-overlay').classList.toggle('hidden');
+    });
+    document.getElementById('sidebar-overlay')?.addEventListener('click', () => {
+        document.getElementById('sidebar').classList.remove('sidebar-open');
+        document.getElementById('sidebar-overlay').classList.add('hidden');
+    });
+    // Mobile theme toggle mirrors desktop
+    document.getElementById('theme-toggle-mobile')?.addEventListener('click', () => {
+        document.getElementById('theme-toggle')?.click();
+    });
+    // Sidebar collapse
+    document.getElementById('sidebar-collapse-btn')?.addEventListener('click', () => {
+        document.querySelector('.layout-shell').classList.toggle('sidebar-collapsed');
+        localStorage.setItem('sniptools-sidebar-collapsed', document.querySelector('.layout-shell').classList.contains('sidebar-collapsed'));
+    });
+    if (localStorage.getItem('sniptools-sidebar-collapsed') === 'true') {
+        document.querySelector('.layout-shell').classList.add('sidebar-collapsed');
+    }
+    // shortcuts button
+    document.getElementById('shortcuts-open-btn')?.addEventListener('click', () => {
+        document.getElementById('shortcuts-overlay')?.classList.toggle('hidden');
+    });
+</script>
 </body>
 </html>

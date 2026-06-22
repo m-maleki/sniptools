@@ -1,3 +1,20 @@
 name = "sniptools-worker"
 main = "scripts/index.js"
 compatibility_date = "2025-08-05"
+
+[site]
+bucket = "."
+include = [
+  "index.html",
+  "manifest.json",
+  "robots.txt",
+  "sitemap.xml",
+  "favicon.ico",
+  "favicon.svg",
+  "googleefc3e020affea7ff.html",
+  "_headers",
+  "styles/**",
+  "scripts/**",
+  "fonts/**",
+  "vendor/**"
+]
